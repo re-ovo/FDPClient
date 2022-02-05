@@ -76,13 +76,15 @@ public abstract class MixinNetHandlerPlayClient {
             ClientUtils.INSTANCE.logError("Failed to handle resource pack", e);
 
             // ensure it performed like vanilla
-            String s2 = url.substring("level://".length());
-            File file1 = new File(this.gameController.mcDataDir, "saves");
-            File file2 = new File(file1, s2);
-            if(file2.isFile()) {
-                netManager.sendPacket(new C19PacketResourcePackStatus(hash, C19PacketResourcePackStatus.Action.ACCEPTED));
+            if(url.startsWith("level://")) {
+                String s2 = url.substring("level://".length());
+                File file1 = new File(this.gameController.mcDataDir, "saves");
+                File file2 = new File(file1, s2);
+                if (file2.isFile()) {
+                    netManager.sendPacket(new C19PacketResourcePackStatus(hash, C19PacketResourcePackStatus.Action.ACCEPTED));
+                }
             }
-            
+
             netManager.sendPacket(new C19PacketResourcePackStatus(hash, C19PacketResourcePackStatus.Action.FAILED_DOWNLOAD));
             callbackInfo.cancel();
         }
